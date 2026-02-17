@@ -1,12 +1,12 @@
 version: "2"
 services:
-  template-service:
+  custom-service:
     image: openlmis/template-service
     links:
       - db
       - log
     ports:
-      - "8080"
+      - "8080:8080"
     env_file: .env
   db:
     image: openlmis/postgres:9.6-debezium

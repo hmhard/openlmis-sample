@@ -142,6 +142,16 @@ resourceTypes:
         body:
           application/json:
             schema: version
+/district-list:
+  displayName: District
+  get:
+    description: District list
+    responses:
+      200:
+        description: district.
+        headers:
+        body:
+          application/json:
 
 /api:
   /widgets:

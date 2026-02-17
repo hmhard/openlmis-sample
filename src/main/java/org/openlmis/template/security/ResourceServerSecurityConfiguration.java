@@ -83,14 +83,10 @@ public class ResourceServerSecurityConfiguration implements ResourceServerConfig
     http.csrf().disable();
 
     http
-        .authorizeRequests()
-        .antMatchers(
-            "/template",
-            "/webjars/**",
-            "/template/webjars/**",
-            "/template/docs/**"
-        ).permitAll()
-        .antMatchers("/**").fullyAuthenticated();
+        .authorizeRequests().anyRequest().permitAll()
+
+
+        ;
   }
 
   /**

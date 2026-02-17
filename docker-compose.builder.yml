@@ -14,6 +14,8 @@ services:
       GRADLE_OPTS: '-Dorg.gradle.daemon=false'
       JAVA_OPTS: '-Dlogging.config=/logback.xml'
     env_file: .env
+    ports:
+      - '8080:8080'
   sonar:
     image: openlmis/dev:9
     links:
