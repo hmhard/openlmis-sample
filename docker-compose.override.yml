@@ -1,6 +1,6 @@
 version: "2"
 services:
-  template-service:
+  custom-service:
     image: openlmis/dev:9
     ports:
       - "5005:5005"

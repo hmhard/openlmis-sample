@@ -12,10 +12,10 @@ All other dependencies, such as Java, are delivered automatically via the Docker
 1. Fork/clone this repository from GitHub.
 
  ```shell
- git clone https://github.com/OpenLMIS/openlmis-template-service.git <openlmis-your-service-name>
+ git clone https://github.com/OpenLMIS/openlmis-custom-service.git <openlmis-your-service-name>
  ```
-2. Respectively change all instances of `openlmis-template-service` and
-`template-service` within the project to `openlmis-your-service-name` and
+2. Respectively change all instances of `openlmis-custom-service` and
+`custom-service` within the project to `openlmis-your-service-name` and
 `your-service-name`.
 3. Change all instances of the default version number ("0.0.1") in the project to your
 version number.
@@ -162,7 +162,7 @@ compose instructions have been provided to demonstrate this.
 4. Run the command below.
 
 ```shell
-> docker-compose -f docker-compose.builder.yml run --service-ports template-service
+> docker-compose -f docker-compose.builder.yml run --service-ports custom-service
 ```
 
 ### <a name="internationalization">Internationalization (i18n)</a>
@@ -256,3 +256,14 @@ These variables are used by our builds in order to integrate with the [Transifex
 
 * **TRANSIFEX_USER** - The username to use with Transifex for updating translations.
 * **TRANSIFEX_PASSWORD** - The password to use with Transifex for updating translations.
+
+## Troubleshooting
+
+### Works on Windows but not on Mac (e.g. /district-list returns 401)
+
+If public endpoints like `/template` or `/district-list` work on Windows but return 401 or "restricted under Authorization" on Mac, common causes are:
+
+1. **BASE_URL** – The service validates OAuth tokens at `BASE_URL/api/oauth/check_token`. If `.env` uses a Windows-only address (e.g. `http://192.168.1.181`), that host may be unreachable from your Mac. On Mac, set `BASE_URL` to a URL reachable from your machine (e.g. `http://localhost:8080` if the auth service runs locally).
+2. **CORS** – If the UI is served from a different origin, uncomment and set `CORS_ALLOWED_ORIGINS=*` in `.env` for local development so the browser allows the response.
+
+The service is configured so that `/template` and `/district-list` do not require token validation; if the browser sends a Bearer token and the auth server is unreachable, the request can still fail. The code strips the Authorization header for these paths so they work even when the auth server is not reachable.

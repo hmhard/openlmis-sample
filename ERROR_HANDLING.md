@@ -194,7 +194,7 @@ We do not address 5xx errors because OpenLMIS software does not always have cont
 stack returns for 5xx responses (those could come from NGINX or even a load balancer).
 
 Examples below show appropriate use of HTTP 403 and 422 status codes with validation error messages.
-The [OpenLMIS Service Style Guide](https://github.com/OpenLMIS/openlmis-template-service/blob/master/STYLE-GUIDE.md)
+The [OpenLMIS Service Style Guide](https://github.com/OpenLMIS/openlmis-custom-service/blob/master/STYLE-GUIDE.md)
 includes further guidance on HTTP Status Codes that comes from
 [Best Practices for Designing a Pragmatic RESTful API](http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#http-status).
 
@@ -220,7 +220,7 @@ messages short, clear and simple.
 ### Translation/i18n
 
 Message keys are used for translations. Keys should follow our
-[Style Guide i18n Naming Conventions](https://github.com/OpenLMIS/openlmis-template-service/blob/master/STYLE-GUIDE.md#i18n-naming-conventions).
+[Style Guide i18n Naming Conventions](https://github.com/OpenLMIS/openlmis-custom-service/blob/master/STYLE-GUIDE.md#i18n-naming-conventions).
 
 The "messageKey" is the key into a property translation file such as a
 [.properties file](http://docs.transifex.com/formats/java-properties/) maintained using Transifex

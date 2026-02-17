@@ -1,8 +1,8 @@
 version: "2"
 services:
 
-  template-service:
-    image: openlmis/template-service
+  custom-service:
+    image: openlmis/custom-service
     links:
       - db
       - log
@@ -17,4 +17,4 @@ services:
   log:
     image: openlmis/rsyslog:1
     volumes:
-      - '../logs/template-service:/var/log'
+      - '../logs/custom-service:/var/log'

@@ -7,7 +7,7 @@ protocols: [ HTTP, HTTPS ]
 
 documentation:
 - title: Getting Started
-  content: Welcome to the OpenLMIS template-service documentation. This minimal API is intended for illustrative purposes.
+  content: Welcome to the OpenLMIS custom-service documentation. This minimal API is intended for illustrative purposes.
 
 schemas:
 - auditLogEntry: !include schemas/auditLogEntry.json
@@ -142,18 +142,19 @@ resourceTypes:
         body:
           application/json:
             schema: version
-/district-list:
-  displayName: District
-  get:
-    description: District list
-    responses:
-      200:
-        description: district.
-        headers:
-        body:
-          application/json:
 
 /api:
+  /logisticians:
+      displayName: logisticians
+      get:
+        description: logisticians list
+        responses:
+          200:
+            description: logisticians.
+            headers:
+            body:
+              application/json:
+
   /widgets:
     displayName: widgets
     get:

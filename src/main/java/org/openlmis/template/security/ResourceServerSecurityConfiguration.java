@@ -17,10 +17,16 @@ package org.openlmis.template.security;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +48,32 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+/**
+ * Request wrapper that hides the Authorization header so the OAuth2 filter does not validate the token.
+ * Used for public paths so they work when the auth server is unreachable (e.g. BASE_URL on another host).
+ */
+final class HttpServletRequestWrapperStripAuth extends HttpServletRequestWrapper {
+  HttpServletRequestWrapperStripAuth(HttpServletRequest request) {
+    super(request);
+  }
+
+  @Override
+  public String getHeader(String name) {
+    if ("Authorization".equalsIgnoreCase(name)) {
+      return null;
+    }
+    return super.getHeader(name);
+  }
+
+  @Override
+  public Enumeration<String> getHeaders(String name) {
+    if ("Authorization".equalsIgnoreCase(name)) {
+      return Collections.emptyEnumeration();
+    }
+    return super.getHeaders(name);
+  }
+}
 
 @Configuration
 @EnableWebSecurity
@@ -65,8 +97,28 @@ public class ResourceServerSecurityConfiguration implements ResourceServerConfig
     resources.resourceId(resourceId);
   }
 
+  /** Paths that are always public (no token validation). Avoids 401 on Mac when BASE_URL is unreachable. */
+  private static final RequestMatcher PUBLIC_PATHS = new OrRequestMatcher(
+      new AntPathRequestMatcher("/template"),
+      new AntPathRequestMatcher("/template/**"),
+      new AntPathRequestMatcher("/district-list"),
+      new AntPathRequestMatcher("/district-list/**")
+  );
+
   @Override
   public void configure(HttpSecurity http) throws Exception {
+    // For public paths, strip Authorization so OAuth2 filter never validates (works when auth server unreachable, e.g. on Mac).
+    http.addFilterBefore(new OncePerRequestFilter() {
+      @Override
+      protected void doFilterInternal(HttpServletRequest request,
+                                      HttpServletResponse response, FilterChain filterChain)
+          throws ServletException, IOException {
+        HttpServletRequest req = PUBLIC_PATHS.matches(request)
+            ? new HttpServletRequestWrapperStripAuth(request)
+            : request;
+        filterChain.doFilter(req, response);
+      }
+    }, AbstractPreAuthenticatedProcessingFilter.class);
     http.addFilterAfter(new OncePerRequestFilter() {
       @Override
       protected void doFilterInternal(HttpServletRequest request,

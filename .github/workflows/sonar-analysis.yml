@@ -1,4 +1,4 @@
-name: SonarCloud OpenLMIS-template-service Pipeline
+name: SonarCloud OpenLMIS-custom-service Pipeline
 on:
   push:
     branches:
